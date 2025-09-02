@@ -1053,6 +1053,9 @@ if __name__ == "__main__":
 
 ```
 
+alembic revision --autogenerate -m "fix foreign key for task_listener"
+alembic upgrade head
+
 新的结构
 ```
 ```

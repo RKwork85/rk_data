@@ -1,9 +1,7 @@
 from datetime import datetime
 from sqlalchemy import Column, Integer, String, DateTime, ForeignKey
-from sqlalchemy.orm import relationship, declarative_base
-
-# 声明基类
-Base = declarative_base()
+from sqlalchemy.orm import relationship
+from app.models.base import Base  # ✅ 使用独立的 Base
 
 class User(Base):
     """用户数据模型"""
@@ -14,11 +12,12 @@ class User(Base):
     email = Column(String(100), unique=True)  # 可选邮箱
     created_at = Column(DateTime, default=datetime.utcnow)  # 创建时间
     
-    # 定义一对多关系：一个用户对应多个视频
+    # 一对多关系：一个用户对应多个视频
     videos = relationship("Video", back_populates="user", cascade="all, delete-orphan")
-    
+
     def __repr__(self):
         return f"<User(id={self.id}, username='{self.username}')>"
+
 
 class Video(Base):
     """原始视频数据模型"""
@@ -34,12 +33,13 @@ class Video(Base):
     # 外键关联用户
     user_id = Column(Integer, ForeignKey('users.id', ondelete="CASCADE"), nullable=False)
     
-    # 定义关系
-    user = relationship("User", back_populates="videos")  # 多对一：视频属于用户
-    clips = relationship("VideoClip", back_populates="video", cascade="all, delete-orphan")  # 一对多：视频有多个切片
-    
+    # 关系
+    user = relationship("User", back_populates="videos")  
+    clips = relationship("VideoClip", back_populates="video", cascade="all, delete-orphan")  
+
     def __repr__(self):
         return f"<Video(id={self.id}, file_name='{self.file_name}', file_path='{self.file_path}')>"
+
 
 class VideoClip(Base):
     """切片视频数据模型"""
@@ -53,8 +53,8 @@ class VideoClip(Base):
     # 外键关联原始视频
     video_id = Column(Integer, ForeignKey('videos.id', ondelete="CASCADE"), nullable=False)
     
-    # 定义关系
-    video = relationship("Video", back_populates="clips")  # 多对一：切片属于原始视频
-    
+    # 关系
+    video = relationship("Video", back_populates="clips")  
+
     def __repr__(self):
-        return f"<VideoClip(id={self.id}, clip_file_name='{self.clip_file_name}', clip_file_name='{self.clip_file_url}')>"
+        return f"<VideoClip(id={self.id}, clip_file_name='{self.clip_file_name}', clip_file_url='{self.clip_file_url}')>"

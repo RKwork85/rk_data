@@ -1,0 +1,48 @@
+./
+├── .git
+├── .gitignore
+├── alembic.ini
+├── app
+│   ├── __pycache__
+│   │   ├── database.cpython-313.pyc
+│   │   ├── main.cpython-313.pyc
+│   │   ├── models.cpython-313.pyc
+│   │   └── schemas.cpython-313.pyc
+│   ├── api_test
+│   │   ├── 01.create_user.py
+│   │   ├── 02.get_user.py
+│   │   ├── 03.create_video.py
+│   │   ├── 04.create_video_clip.py
+│   │   ├── 05.get_vidoe_detail.py
+│   │   ├── 06.get_video_clips_detail.py
+│   │   ├── 07.get_someone_video_clips.py
+│   │   ├── 08.get_someone_videos.py
+│   │   └── 09.three_bound.py
+│   ├── apis
+│   │   └── v1
+│   │       └── endpoints
+│   │           ├── tasks.py
+│   │           └── videos.py
+│   ├── database.py
+│   ├── example_doc.py
+│   ├── main.py
+│   ├── migrations
+│   │   ├── README
+│   │   ├── __pycache__
+│   │   │   └── env.cpython-313.pyc
+│   │   ├── env.py
+│   │   ├── script.py.mako
+│   │   └── versions
+│   │       ├── 7bb254787386_initial_migration.py
+│   │       └── __pycache__
+│   │           └── 7bb254787386_initial_migration.cpython-313.pyc
+│   ├── models
+│   │   ├── base.py
+│   │   ├── tasks.py
+│   │   └── user_video.py
+│   ├── schemas.py
+│   ├── storage.py
+│   └── video_utils.py
+├── app.db
+├── readme.md
+└── tree.py

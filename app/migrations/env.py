@@ -1,53 +1,56 @@
+# app/migrations/env.py
 from logging.config import fileConfig
-from sqlalchemy import engine_from_config
-from sqlalchemy import pool
+from sqlalchemy import engine_from_config, pool
 from alembic import context
-import os
-import sys
 
-# 添加路径设置 - 这是关键修复
-current_dir = os.path.dirname(os.path.abspath(__file__))
-root_dir = os.path.abspath(os.path.join(current_dir, '..', '..'))
-sys.path.insert(0, root_dir)
+# 导入你的 Base 和所有模型
+from app.models.base import Base
+from app.models.user_video import *
+from app.models.tasks import *
 
-# 现在可以安全导入应用模块
-from app.models import Base
-from app.database import engine
-
-# 这是 Alembic 的配置对象，提供访问 .ini 文件中的值
+# Alembic 配置对象
 config = context.config
 
-# 设置目标元数据
+# 设置日志
+fileConfig(config.config_file_name)
+
+# 设置目标 metadata，让 Alembic 知道要生成哪些表
 target_metadata = Base.metadata
 
-# 其他配置
-def run_migrations_offline():
-    """在 'offline' 模式下运行迁移"""
-    url = config.get_main_option("sqlalchemy.url")
-    context.configure(
-        url=url,
-        target_metadata=target_metadata,
-        literal_binds=True,
-        dialect_opts={"paramstyle": "named"},
-        render_as_batch=True  # SQLite 需要这个选项
-    )
-
-    with context.begin_transaction():
-        context.run_migrations()
-
+# 线上模式
 def run_migrations_online():
-    """在 'online' 模式下运行迁移"""
-    connectable = engine  # 使用我们定义的 engine
+    connectable = engine_from_config(
+        config.get_section(config.config_ini_section),
+        prefix="sqlalchemy.",
+        poolclass=pool.NullPool,
+    )
 
     with connectable.connect() as connection:
         context.configure(
             connection=connection,
             target_metadata=target_metadata,
-            render_as_batch=True  # SQLite 需要这个选项
+            compare_type=True,  # ✅ 比较列类型变化
+            compare_server_default=True,  # ✅ 比较默认值变化
         )
 
         with context.begin_transaction():
             context.run_migrations()
+
+
+# 离线模式（生成 SQL 文件）
+def run_migrations_offline():
+    url = config.get_main_option("sqlalchemy.url")
+    context.configure(
+        url=url,
+        target_metadata=target_metadata,
+        literal_binds=True,
+        compare_type=True,
+        compare_server_default=True,
+    )
+
+    with context.begin_transaction():
+        context.run_migrations()
+
 
 if context.is_offline_mode():
     run_migrations_offline()
